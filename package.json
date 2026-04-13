@@ -1,6 +1,6 @@
 {
   "name": "venue-optimization-system",
-  "version": "2.1.1",
+  "version": "1.0.0",
   "description": "Smart system for crowd management and navigation in large sporting venues.",
   "main": "server.js",
   "scripts": {

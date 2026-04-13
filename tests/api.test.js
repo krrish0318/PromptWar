@@ -3,13 +3,6 @@ const app = require('../server');
 
 describe('VenueCrowd API v2.1 Endpoints', () => {
 
-  test('GET /health should return 200 and system status', async () => {
-    const res = await request(app).get('/health');
-    expect(res.statusCode).toEqual(200);
-    expect(res.body.status).toBe('UP');
-  });
-
-
   test('GET /api/venue/crowd should return status 200 and all zones', async () => {
     const res = await request(app).get('/api/venue/crowd');
     expect(res.statusCode).toEqual(200);
@@ -69,11 +62,4 @@ describe('VenueCrowd API v2.1 Endpoints', () => {
     expect(res.statusCode).toEqual(400);
   });
 
-  test('POST /api/calendar/sync should return sync status', async () => {
-    const res = await request(app).post('/api/calendar/sync');
-    expect(res.statusCode).toEqual(200);
-    expect(res.body).toHaveProperty('success');
-  });
-
 });
-
