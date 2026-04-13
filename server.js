@@ -1,52 +1,25 @@
 const express = require('express');
+const path = require('path');
+const helmet = require('helmet');
 require('dotenv').config();
 
-const validateConfig = require('./src/utils/config');
-const loaders = require('./src/loaders');
-const Logger = require('./src/loaders/logger');
-const { SYSTEM } = require('./src/utils/constants');
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-/**
- * VenueCrowd Bootstrap
- * High-quality entry point utilizing the Loaders pattern for extreme modularity.
- */
-async function startServer() {
-  const app = express();
-  const PORT = process.env.PORT || 3000;
+// Middleware
+app.use(helmet({ contentSecurityPolicy: false })); // Simplified for demo
+app.use(express.json());
+app.use(express.static('public'));
 
-  // 1. Initial Validation
-  validateConfig();
+// Routes
+app.use('/api', require('./src/routes/api'));
 
-  // 2. Initialize Loaders (Firebase, Express, Routes, etc.)
-  await loaders(app);
-
-  // 3. Start Listening
-  app.listen(PORT, (err) => {
-    if (err) {
-      Logger.error('Failed to start server', { error: err.message });
-      process.exit(1);
-    }
-    
-    Logger.info(`
-      ################################################
-      🚀 ${SYSTEM.SERVICE_NAME} v${SYSTEM.VERSION}
-      🛡️  Environment: ${process.env.NODE_ENV || 'development'}
-      📡 Listening on: http://localhost:${PORT}
-      ################################################
-    `);
-  });
-}
-
-// Global Exception Tracking
-process.on('uncaughtException', (err) => {
-  Logger.error('Uncaught Exception', { error: err.message, stack: err.stack });
-  process.exit(1);
+// Minimal Error Handler
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: "System error" });
 });
 
-process.on('unhandledRejection', (err) => {
-  Logger.error('Unhandled Rejection', { error: err.message, stack: err.stack });
-  process.exit(1);
-});
+app.listen(PORT, () => console.log(`🚀 Venue Engine @ http://localhost:${PORT}`));
 
-// Launch
-startServer();
+module.exports = app;
